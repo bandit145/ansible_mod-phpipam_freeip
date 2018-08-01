@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
     'status': ['preview'],
@@ -75,11 +74,12 @@ token:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-import requests
+from module_utils.php_api import *
 
 def run_module():
     module_args = dict(
         subnet=dict(type='str', required=True),
+        ip_addr=dict(type='str',required=True),
         url=dict(type='str', required=False),
         username=dict(type='str', required=False),
         password=dict(type='str', required=False, no_log=True),
@@ -94,18 +94,7 @@ def run_module():
         supports_check_mode=False
     )
     
-    s = requests.Session()
-    
-    token = get_token(module.params['url'], 
-                      module.params['username'], module.params['password'])
-    result['token'] = token
-    s.headers.update({'token': '%s' % token})
-
-    subnet_id = get_subnet_id(s, module.params['url'], module.params['subnet'])
-    
-    result['subnet_id'] = subnet_id
-
-    ip = get_free_ip(s, module.params['url'], subnet_id)
+   phpipam = API(module.params['username'],module.params['password'],module.params['url'])
     
     result['ip'] = ip
     result['changed'] = True

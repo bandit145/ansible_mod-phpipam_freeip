@@ -1,0 +1,17 @@
+- name: test phpipam modules/lookups
+  hosts: all
+  gather_facts: no
+
+  vars:
+    #free_ip: "{{lookup('phpipam_freeip','10.10.1.0/24','192.168.50.2/api/phpipam/','admin','testpass')}}"
+
+  tasks:
+    - name: create ip
+      phpipam_address:
+        ipam_host: http://192.168.50.2/api/phpipam/
+        ip: 10.10.1.1
+        subnet: 10.10.1.0/24
+        description: wat
+        username: admin
+        password: testpass
+      delegate_to: localhost
