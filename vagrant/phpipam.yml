@@ -4,6 +4,11 @@
 
   tasks:
 
+    - name: set ansible cfg
+      copy:
+        src: ansible.cfg
+        dest: /etc/ansible/ansible.cfg
+
     - name: install epel-release
       yum: 
         name: epel-release

@@ -15,3 +15,39 @@
         username: admin
         password: testpass
       delegate_to: localhost
+      register: create_ip
+
+    - assert:
+        that:
+          - create_ip.changed
+
+    - name: ensure ip
+      phpipam_address:
+        ipam_host: http://192.168.50.2/api/phpipam/
+        ip: 10.10.1.1
+        subnet: 10.10.1.0/24
+        description: wat
+        username: admin
+        password: testpass
+      delegate_to: localhost
+      register: ensure_ip
+
+    - assert:
+        that:
+          - not ensure_ip.changed
+
+    - name: delete ip
+      phpipam_address:
+        ipam_host: http://192.168.50.2/api/phpipam/
+        ip: 10.10.1.1
+        subnet: 10.10.1.0/24
+        description: wat
+        state: absent
+        username: admin
+        password: testpass
+      delegate_to: localhost
+      register: delete_ip
+
+    - assert:
+        that:
+          - delete_ip.changed

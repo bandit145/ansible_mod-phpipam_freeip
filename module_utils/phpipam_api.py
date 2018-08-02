@@ -11,12 +11,13 @@ class API:
 
 	def php_ipam_request(self,request_type,api_endpoint,**kwargs):
 		try:
-			if request_type != "get":
+			if request_type != "get" and request_type != 'delete':
 				response = getattr(requests,request_type)(self.server+"/"+api_endpoint,data=json.dumps(kwargs['data']),headers={'phpipam-token':self.auth})
 			else:
 				response = getattr(requests,request_type)(self.server+"/"+api_endpoint,headers={'phpipam-token':self.auth})
 			if response.status_code not in range(200,300):
-				raise AnsibleError('phpipam call failed with {code}'.format(code=response.status_code))
+				raise AnsibleError('phpipam call failed with {code}: {message}'.format(code=response.status_code,
+					message=response.json()['message']))
 			return response.json()
 		except Exception as error:
 			raise AnsibleError(str(error))
@@ -42,10 +43,18 @@ def get_params(module_params,request_data):
 def convert_bools(module_params):
 	new_module_params = {}
 	for key in module_params.keys():
-			if module_params[key] == True:
-				new_module_params[key] = "1"
-			elif module_params[key] == False:
-				new_module_params[key] = "0"
-			else:
+		if module_params[key] == True:
+			new_module_params[key] = "1"
+		elif module_params[key] == False:
+			new_module_params[key] = "0"
+		else:
+			new_module_params[key] = module_params[key]
+	return new_module_params
+
+def clean_post_values(module_params,values):
+	new_module_params = {}
+	for key in module_params.keys():
+		if key not in values:
+			if module_params[key]:
 				new_module_params[key] = module_params[key]
 	return new_module_params
