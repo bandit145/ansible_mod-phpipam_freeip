@@ -1,0 +1,1 @@
+{"virtualbox":{"/phpipam-py":{"guestpath":"/phpipam-py","hostpath":"E:/github/ansible_mod-phpipam_freeip","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"E:/github/ansible_mod-phpipam_freeip/vagrant","disabled":false,"__vagrantfile":true}}}
